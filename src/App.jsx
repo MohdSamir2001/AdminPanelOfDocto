@@ -1,10 +1,17 @@
 import React from "react";
+import AppRoutes from "./routes/AppRoutes";
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import AdminStore from "./utils/AdminStore";
 const App = () => {
   return (
     <div>
-      <h1 className="bg-red-200">Hello World</h1>
+      <Provider store={AdminStore}>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </Provider>
     </div>
   );
 };
-
 export default App;
