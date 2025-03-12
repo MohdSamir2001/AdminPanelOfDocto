@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import doctorsReducer from "../utils/doctorsSlice";
-const AdminStore = configureStore({
+import doctorsReducer from "./allDoctorsSlice";
+const adminStore = configureStore({
   reducer: {
     doctors: doctorsReducer,
   },
 });
-export default AdminStore;
+export default adminStore;

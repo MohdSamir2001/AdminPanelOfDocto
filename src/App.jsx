@@ -2,7 +2,8 @@ import React from "react";
 import AppRoutes from "./routes/AppRoutes";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import AdminStore from "./utils/AdminStore";
+import AdminStore from "./utils/adminStore";
+
 const App = () => {
   return (
     <div>
