@@ -5,6 +5,7 @@ import { BACKEND_URL } from "../../utils/constants";
 const MedicinesList = () => {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const getAllMedicines = async () => {
     try {
@@ -27,6 +28,17 @@ const MedicinesList = () => {
     getAllMedicines();
   }, []);
 
+  // Filter medicines based on search query
+  const filteredMedicines = medicines.filter((item) => {
+    const lowerQuery = searchQuery.toLowerCase();
+    return (
+      item.name.toLowerCase().includes(lowerQuery) ||
+      (item.includeSalts &&
+        item.includeSalts.toLowerCase().includes(lowerQuery)) ||
+      (item.category && item.category.toLowerCase().includes(lowerQuery))
+    );
+  });
+
   return (
     <div className="w-full px-4 md:px-10 py-6 h-[90vh] flex flex-col">
       <h1 className="text-4xl font-semibold text-center text-slate-700">
@@ -36,9 +48,20 @@ const MedicinesList = () => {
         Browse our available medicines and find what you need.
       </p>
 
+      {/* Search Bar */}
+      <div className="w-full max-w-4xl mx-auto mt-4">
+        <input
+          type="text"
+          placeholder="Search by name, salt, or usage..."
+          className="w-full font-light p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
       {/* Scrollable List */}
       <div className="w-full flex flex-col items-center gap-6 pt-5 h-[85vh] overflow-y-auto scrollbar-hide">
-        {medicines.map((item) => (
+        {filteredMedicines.map((item) => (
           <div
             key={item._id}
             className="border border-gray-300 rounded-2xl w-full max-w-4xl flex flex-col md:flex-row items-center p-4 shadow-lg hover:shadow-xl transition-all duration-300 bg-white"
@@ -54,14 +77,19 @@ const MedicinesList = () => {
             <div className="w-full md:w-2/3 pl-4 text-center md:text-left">
               <p className="text-xl font-semibold text-gray-800">{item.name}</p>
               <p className="text-sm text-gray-600">{item.category}</p>
+
+              <p className="text-sm text-gray-500 font-medium">
+                <strong>Salts:</strong> {item.includeSalts || "Not specified"}
+              </p>
+
               <p className="text-sm text-gray-500">
-                Dosage: {item.dosage} | {item.form}
+                <strong>Dosage:</strong> {item.dosage} | {item.form}
               </p>
               <p className="text-sm text-gray-500">
-                Manufacturer: {item.manufacturer}
+                <strong>Manufacturer:</strong> {item.manufacturer}
               </p>
-              <p className="text-lg font-semibold text-green-600 mt-2">
-                Rs.{item.price} for one Strip
+              <p className="text-lg font-semibold text-green-600 mt-1">
+                Rs.{item.price} for One Stripe
               </p>
 
               {item.prescriptionRequired && (
