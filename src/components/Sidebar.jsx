@@ -8,6 +8,8 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { AiOutlineMedicineBox } from "react-icons/ai";
+import { GiMedicines } from "react-icons/gi";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -56,6 +58,7 @@ const Sidebar = () => {
               label="Dashboard"
               isCollapsed={isCollapsed}
             />
+
             <NavItem
               to="/all-appointments"
               icon={<FaCalendarCheck />}
@@ -72,6 +75,18 @@ const Sidebar = () => {
               to="/doctor-list"
               icon={<FaUserMd />}
               label="Doctors List"
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
+              to="/add-medicine"
+              icon={<AiOutlineMedicineBox />}
+              label="Add Medicine"
+              isCollapsed={isCollapsed}
+            />
+            <NavItem
+              to="/medicine-list"
+              icon={<GiMedicines />}
+              label="Medicines List"
               isCollapsed={isCollapsed}
             />
           </ul>

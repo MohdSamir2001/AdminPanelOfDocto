@@ -7,6 +7,8 @@ import AllAppointments from "../pages/Admin/AllAppointments";
 import AddDoctor from "../pages/Admin/AddDoctor";
 import DoctorsList from "../pages/Admin/DoctorsList";
 import Login from "../pages/Login";
+import MedicinesList from "../pages/Admin/MedicinesList";
+import AddMedicine from "../pages/Admin/AddMedicine";
 
 const AppRoutes = () => {
   return (
@@ -17,8 +19,10 @@ const AppRoutes = () => {
         <Route path="/" element={<HomePage />}>
           <Route index element={<Dashboard />} /> {/* Default route */}
           <Route path="admin-dashboard" element={<Dashboard />} />
+          <Route path="medicine-list" element={<MedicinesList />} />
           <Route path="all-appointments" element={<AllAppointments />} />
           <Route path="add-doctor" element={<AddDoctor />} />
+          <Route path="add-medicine" element={<AddMedicine />} />
           <Route path="doctor-list" element={<DoctorsList />} />
         </Route>
 
