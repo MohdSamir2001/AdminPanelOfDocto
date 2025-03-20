@@ -4,10 +4,13 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { BACKEND_URL } from "../../utils/constants";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { topMedicines } from "../../utils/suggestionNames";
+import { manufacturers } from "../../utils/suggestionsManufactures";
 
 const AddMedicine = () => {
   const [medicineImg, setMedicineImg] = useState(null);
   const [name, setName] = useState("");
+  const [filteredOptions, setFilteredOptions] = useState([]);
   const [description, setDescription] = useState(""); // ✅ Added Description Field
   const [includeSalts, setIncludeSalts] = useState("");
   const [noOfTablets, setNoOfTablets] = useState("");
@@ -17,9 +20,33 @@ const AddMedicine = () => {
   const [manufacturer, setManufacturer] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [prescriptionRequired, setPrescriptionRequired] = useState(false);
+  const [filteredManufacturers, setFilteredManufacturers] = useState([]);
   const [dosage, setDosage] = useState("");
   const [form, setForm] = useState("Tablet");
-
+  // Handle Manufacturer Input
+  const handleManufacturerChange = (inputValue) => {
+    setManufacturer(inputValue);
+    if (inputValue.length > 0) {
+      const suggestions = manufacturers
+        .filter((man) => man.toLowerCase().startsWith(inputValue.toLowerCase()))
+        .slice(0, 5);
+      setFilteredManufacturers(suggestions);
+    } else {
+      setFilteredManufacturers([]);
+    }
+  };
+  // Handle Name Change with Suggestions
+  const handleNameChange = (inputValue) => {
+    setName(inputValue);
+    if (inputValue.length > 0) {
+      const suggestions = topMedicines
+        .filter((med) => med.toLowerCase().startsWith(inputValue.toLowerCase())) // ✅ Only starts with input
+        .slice(0, 5); // Limit suggestions to 5
+      setFilteredOptions(suggestions);
+    } else {
+      setFilteredOptions([]);
+    }
+  };
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     toast.info("Adding medicine...");
@@ -108,14 +135,36 @@ const AddMedicine = () => {
           </div>
 
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Medicine Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="border border-slate-600 bg-slate-700 text-white rounded px-3 py-2 w-full"
-              required
-            />
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Medicine Name"
+                value={name}
+                onChange={(e) => handleNameChange(e.target.value)}
+                onBlur={() => setTimeout(() => setFilteredOptions([]), 200)} // Hide on blur after delay
+                className="border border-slate-600 bg-slate-700 text-white rounded px-3 py-2 w-full"
+                required
+              />
+
+              {/* Dropdown Suggestions with Scroll */}
+              {filteredOptions.length > 0 && (
+                <ul className="absolute bg-white border border-gray-300 text-black w-full mt-1 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                  {filteredOptions.map((option, index) => (
+                    <li
+                      key={index}
+                      onMouseDown={() => {
+                        setName(option);
+                        setFilteredOptions([]); // Hide suggestions on selection
+                      }}
+                      className="cursor-pointer px-3 py-2 hover:bg-gray-200"
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             <input
               type="text"
               placeholder="Dosage (e.g., 500mg)"
@@ -146,13 +195,36 @@ const AddMedicine = () => {
               onChange={(e) => setNoOfTablets(e.target.value)}
               className="border border-slate-600 bg-slate-700 text-white rounded px-3 py-2 w-full"
             />
-            <input
-              type="text"
-              placeholder="Manufacturer"
-              value={manufacturer}
-              onChange={(e) => setManufacturer(e.target.value)}
-              className="border border-slate-600 bg-slate-700 text-white rounded px-3 py-2 w-full"
-            />
+            <div className="relative mb-4">
+              <input
+                type="text"
+                placeholder="Enter Manufacturer Name"
+                value={manufacturer}
+                onChange={(e) => handleManufacturerChange(e.target.value)}
+                onBlur={() =>
+                  setTimeout(() => setFilteredManufacturers([]), 200)
+                }
+                className="border border-slate-600 bg-slate-700 text-white rounded px-3 py-2 w-full"
+                required
+              />
+              {/* Dropdown Suggestions */}
+              {filteredManufacturers.length > 0 && (
+                <ul className="absolute bg-white border border-gray-300 text-black w-full mt-1 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                  {filteredManufacturers.map((option, index) => (
+                    <li
+                      key={index}
+                      onMouseDown={() => {
+                        setManufacturer(option);
+                        setFilteredManufacturers([]);
+                      }}
+                      className="cursor-pointer px-3 py-2 hover:bg-gray-200"
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <input
               type="date"
               value={expiryDate}
@@ -160,6 +232,23 @@ const AddMedicine = () => {
               className="border border-slate-600 bg-slate-700 text-white rounded px-3 py-2 w-full"
               required
             />
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="border border-slate-600 bg-slate-700 text-white rounded px-3 py-2 w-full"
+            >
+              {[
+                "Pain Relief",
+                "Antibiotics",
+                "Vitamins",
+                "Allergy",
+                "Diabetes",
+              ].map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
             <select
               value={form}
               onChange={(e) => setForm(e.target.value)}

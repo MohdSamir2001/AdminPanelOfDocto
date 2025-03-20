@@ -9,6 +9,7 @@ import DoctorsList from "../pages/Admin/DoctorsList";
 import Login from "../pages/Login";
 import MedicinesList from "../pages/Admin/MedicinesList";
 import AddMedicine from "../pages/Admin/AddMedicine";
+import AdminOrdersPage from "../pages/Admin/AdminOrdersPage";
 
 const AppRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const AppRoutes = () => {
           <Route index element={<Dashboard />} /> {/* Default route */}
           <Route path="admin-dashboard" element={<Dashboard />} />
           <Route path="medicine-list" element={<MedicinesList />} />
+          <Route path="orders-list" element={<AdminOrdersPage />} />
           <Route path="all-appointments" element={<AllAppointments />} />
           <Route path="add-doctor" element={<AddDoctor />} />
           <Route path="add-medicine" element={<AddMedicine />} />

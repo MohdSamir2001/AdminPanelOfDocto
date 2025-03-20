@@ -21,6 +21,7 @@ const DoctorsList = () => {
       dispatch(addDoctors(data?.doctors));
     } catch (error) {
       console.error("Error fetching doctors:", error);
+      toast.error("Failed to fetch doctors");
     }
   };
 
@@ -45,6 +46,36 @@ const DoctorsList = () => {
     } catch (error) {
       console.error("Error deleting doctor:", error);
       toast.error("Failed to delete doctor");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Toggle doctor availability
+  const changeAvailability = async (doctorId) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.post(
+        `${BACKEND_URL}/api/doctor/change-availablity`,
+        { doctorId },
+        { withCredentials: true }
+      );
+
+      if (data.success) {
+        dispatch(
+          addDoctors(
+            doctors.map((doc) =>
+              doc._id === doctorId ? { ...doc, avaliable: !doc.avaliable } : doc
+            )
+          )
+        );
+        toast.success("Availability updated!");
+      } else {
+        throw new Error("Failed to update availability");
+      }
+    } catch (error) {
+      console.error("Error updating availability:", error);
+      toast.error("Failed to update availability");
     } finally {
       setLoading(false);
     }

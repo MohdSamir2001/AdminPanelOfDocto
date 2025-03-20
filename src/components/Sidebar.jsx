@@ -89,6 +89,12 @@ const Sidebar = () => {
               label="Medicines List"
               isCollapsed={isCollapsed}
             />
+            <NavItem
+              to="/orders-list"
+              icon={<GiMedicines />}
+              label="Orders List"
+              isCollapsed={isCollapsed}
+            />
           </ul>
         )}
 
