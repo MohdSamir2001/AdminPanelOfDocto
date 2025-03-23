@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
+  const [expandedOrders, setExpandedOrders] = useState([]);
 
   useEffect(() => {
     fetchOrders();
@@ -25,7 +26,7 @@ const AdminOrdersPage = () => {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       await axios.put(
-        "http://localhost:1234/api/admin/orders/update",
+        `http://localhost:1234/api/admin/orders/update/${orderId}`,
         { orderId, status: newStatus },
         { withCredentials: true }
       );
@@ -55,6 +56,14 @@ const AdminOrdersPage = () => {
     }
   };
 
+  const toggleOrderDetails = (orderId) => {
+    setExpandedOrders((prev) =>
+      prev.includes(orderId)
+        ? prev.filter((id) => id !== orderId)
+        : [...prev, orderId]
+    );
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-100 min-h-screen">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">
@@ -73,31 +82,56 @@ const AdminOrdersPage = () => {
           </thead>
           <tbody>
             {orders.map((order) => (
-              <tr key={order._id} className="border-b">
-                <td className="p-2">{order._id}</td>
-                <td className="p-2">{order.user?.name || "Unknown User"}</td>
-                <td className="p-2">Rs {order.totalPrice}</td>
-                <td className="p-2">
-                  <select
-                    value={order.status}
-                    onChange={(e) =>
-                      updateOrderStatus(order._id, e.target.value)
-                    }
-                    className="border p-1 rounded"
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Delivered">Delivered</option>
-                  </select>
-                </td>
-                <td className="p-2">
-                  <button
-                    onClick={() => deleteOrder(order._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
+              <>
+                <tr key={order._id} className="border-b">
+                  <td className="p-2">{order._id}</td>
+                  <td className="p-2">{order.user?.name || "Unknown User"}</td>
+                  <td className="p-2">Rs {order.totalPrice}</td>
+                  <td className="p-2">
+                    <select
+                      value={order.status}
+                      onChange={(e) =>
+                        updateOrderStatus(order._id, e.target.value)
+                      }
+                      className="border p-1 rounded"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
+                  </td>
+                  <td className="p-2 flex space-x-2">
+                    <button
+                      onClick={() => toggleOrderDetails(order._id)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600"
+                    >
+                      {expandedOrders.includes(order._id)
+                        ? "Hide Details"
+                        : "View Details"}
+                    </button>
+                    <button
+                      onClick={() => deleteOrder(order._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+                {expandedOrders.includes(order._id) && (
+                  <tr>
+                    <td colSpan="5" className="p-4 bg-gray-100">
+                      <strong>Medicines Ordered:</strong>
+                      <ul>
+                        {order.medicines.map((item, index) => (
+                          <li key={index}>
+                            - {item.medicineId?.name || "Unknown Medicine"} (
+                            {item.quantity} pcs)
+                          </li>
+                        ))}
+                      </ul>
+                    </td>
+                  </tr>
+                )}
+              </>
             ))}
           </tbody>
         </table>
