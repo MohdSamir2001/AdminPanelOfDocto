@@ -10,13 +10,14 @@ import {
 } from "react-icons/fa";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import { GiMedicines } from "react-icons/gi";
+import { useSelector } from "react-redux";
+import { RiListOrdered2 } from "react-icons/ri";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const aToken = true;
-  const dToken = false;
-
+  const aToken = useSelector((store) => store.admin);
+  const dToken = useSelector((store) => store.doctor);
   return (
     <>
       {/* Mobile Toggle Button */}
@@ -26,7 +27,6 @@ const Sidebar = () => {
       >
         <FaBars size={15} />
       </button>
-
       {/* Sidebar (Desktop & Mobile) */}
       <div
         className={`h-screen bg-slate-800 text-white p-4 transition-all duration-300 shadow-xl 
@@ -53,7 +53,7 @@ const Sidebar = () => {
         {aToken && (
           <ul className="space-y-2">
             <NavItem
-              to="/"
+              to="/admin-dashboard"
               icon={<FaHome />}
               label="Dashboard"
               isCollapsed={isCollapsed}
@@ -91,7 +91,7 @@ const Sidebar = () => {
             />
             <NavItem
               to="/orders-list"
-              icon={<GiMedicines />}
+              icon={<RiListOrdered2 />}
               label="Orders List"
               isCollapsed={isCollapsed}
             />

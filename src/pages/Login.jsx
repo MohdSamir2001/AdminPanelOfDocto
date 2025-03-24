@@ -4,22 +4,31 @@ import { BACKEND_URL } from "../utils/constants";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addDoctor } from "../utils/doctorSlice";
+import { addAdmin } from "../utils/adminSlice";
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState("Admin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     const url =
-      activeTab === "Admin" ? "/api/admin/login" : "/api/doctor/login";
+      activeTab === "Admin" ? "/api/admin/login" : "/api/admin/doctor-login";
     try {
       const { data } = await axios.post(
         `${BACKEND_URL}${url}`,
         { email, password },
         { withCredentials: true }
       );
+      if (data?.message === "Login successful") {
+        dispatch(addDoctor(true));
+      } else if (data?.message === "Logged in successfully") {
+        dispatch(addAdmin(true));
+      }
       toast.success(`${activeTab} logged in successfully!`, {
         position: "top-right",
         autoClose: 3000,

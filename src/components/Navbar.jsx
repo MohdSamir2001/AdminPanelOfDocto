@@ -3,17 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaSignOutAlt } from "react-icons/fa";
 import axios from "axios";
 import { BACKEND_URL } from "../utils/constants";
+import { useDispatch } from "react-redux";
+import { removeAdmin } from "../utils/adminSlice";
+import { removeDoctor } from "../utils/doctorSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleLogout = async () => {
     await axios.post(
       BACKEND_URL + "/api/admin/logout",
       {},
       { withCredentials: true }
     );
+    dispatch(removeAdmin());
+    dispatch(removeDoctor());
     navigate("/login");
   };
 

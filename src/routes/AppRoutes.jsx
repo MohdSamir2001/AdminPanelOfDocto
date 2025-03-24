@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import HomePage from "../pages/HomePage";
@@ -10,8 +10,50 @@ import Login from "../pages/Login";
 import MedicinesList from "../pages/Admin/MedicinesList";
 import AddMedicine from "../pages/Admin/AddMedicine";
 import AdminOrdersPage from "../pages/Admin/AdminOrdersPage";
+import { useDispatch, useSelector } from "react-redux";
+import { addAdmin } from "../utils/adminSlice";
+import { addDoctor } from "../utils/doctorSlice";
+import axios from "axios";
+import { BACKEND_URL } from "../utils/constants";
 
 const AppRoutes = () => {
+  const dispatch = useDispatch();
+  const fetchAdmin = async () => {
+    try {
+      const { data } = await axios.get(BACKEND_URL + "/api/admin/get-admin", {
+        withCredentials: true,
+      });
+      if (data?.message === "Admin is logged in") {
+        dispatch(addAdmin(true));
+      }
+    } catch (error) {
+      console.error("Admin fetch error:", error);
+    }
+  };
+  const fetchDoctor = async () => {
+    try {
+      const { data } = await axios.get(BACKEND_URL + "/api/doctor/get-doctor", {
+        withCredentials: true,
+      });
+      if (data?.message === "Doctor is logged in") {
+        dispatch(addDoctor(true));
+      }
+    } catch (error) {
+      console.error("Doctor fetch error:", error);
+    }
+  };
+  useEffect(() => {
+    axios
+      .get(BACKEND_URL + "/api/admin/check-login", { withCredentials: true })
+      .then(({ data }) => {
+        if (data.role === "admin") {
+          fetchAdmin();
+        } else if (data.role === "doctor") {
+          fetchDoctor();
+        }
+      })
+      .catch((error) => console.error("Login check error:", error));
+  }, []);
   return (
     <div>
       <Navbar />
