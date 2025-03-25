@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const doctorSlice = createSlice({
   name: "doctor",
-  initialState: false,
+  initialState: false, // 👈 No object, just boolean
   reducers: {
-    addDoctor: (state, action) => true,
-    removeDoctor: (state, action) => false,
+    addDoctor: (state, action) => action.payload, // ✅ Takes true/false
+    removeDoctor: () => false, // ✅ Always sets false
   },
 });
 

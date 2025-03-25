@@ -99,10 +99,12 @@ const AllAppointments = () => {
                 <p>{item.doctorData.name}</p>
               </div>
               <p>${item.amount}</p>
-              {item.cancelled ? (
-                <p className="text-red-400 text-xs font-medium">Cancelled</p>
-              ) : item.isCompleted ? (
+
+              {/* Conditional Rendering for Action Column */}
+              {item.acceptAppointment ? (
                 <p className="text-green-500 text-xs font-medium">Completed</p>
+              ) : item.cancelled ? (
+                <p className="text-red-400 text-xs font-medium">Cancelled</p>
               ) : (
                 <img
                   onClick={() => cancelAppointment(item._id)}

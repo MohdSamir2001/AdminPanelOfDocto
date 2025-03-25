@@ -129,11 +129,13 @@ const Dashboard = () => {
                     Booking on {formatSlotDate(item.slotDate)}
                   </p>
                 </div>
+
+                {/* ✅ Handle Status Display */}
                 {item.cancelled ? (
                   <p className="text-red-500 text-xs font-semibold">
                     Cancelled
                   </p>
-                ) : item.isCompleted ? (
+                ) : item.acceptAppointment ? (
                   <p className="text-green-500 text-xs font-semibold">
                     Completed
                   </p>
